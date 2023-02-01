@@ -1,0 +1,15 @@
+{
+  "name": "get-prs",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3",
+    "process": "^0.11.10"
+  },
+  "dependencies": {
+    "@octokit/core": "^4.2.0"
+  }
+}
