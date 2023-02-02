@@ -1,4 +1,11 @@
 $max-width: 40rem;
+$body-bg: #c9ada7;
+$card-bg: #f2e9e4;
+$link-text: #9a8c98;
+$link-text-hover: #22223b;
+$default-text: #4a4e69;
+$bold-text: #22223b;
+$shadow: #22223b;
 
 //<resets>
 *,
@@ -45,18 +52,9 @@ ol {
 }
 //</resets>
 
-:root {
-  --body-bg: #c9ada7;
-  --card-bg: #f2e9e4;
-  --link-text: #9a8c98;
-  --link-text-hover: #22223b;
-  --default-text: #4a4e69;
-  --bold-text: #22223b;
-}
-
 body {
   font-family: "Open Sans", sans-serif;
-  background-color: var(--body-bg);
+  background-color: $body-bg;
   padding: 1rem 3rem;
 
   @media (max-width: $max-width) {
@@ -74,7 +72,7 @@ h2 {
 
 h1,
 h2 {
-  color: var(--bold-text);
+  color: $bold-text;
   letter-spacing: 1px;
 }
 
@@ -86,17 +84,17 @@ a {
 
   &,
   &:visited {
-    color: var(--link-text);
+    color: $link-text;
   }
 
   &:hover,
   &:focus-visible {
-    color: var(--link-text-hover);
+    color: $link-text-hover;
   }
 }
 
 p {
-  color: var(--default-text);
+  color: $default-text;
 }
 
 .repo-list {
@@ -112,13 +110,14 @@ p {
 }
 
 .repo {
-  background-color: var(--card-bg);
+  background-color: $card-bg;
   border-radius: 10px;
   padding: 1rem;
+  box-shadow: 2px 2px 5px transparentize($shadow, 0.7);
 }
 
 .draft {
-  background-color: var(--body-bg);
+  background-color: $body-bg;
   display: inline-block;
   padding: 0 0.5rem;
   border-radius: 5px;
@@ -129,7 +128,7 @@ p {
 
 .pr {
   &:not(:first-child) {
-    border-top: 3px solid var(--default-text);
+    border-top: 3px solid $default-text;
     padding-top: 1rem;
   }
   &:not(:last-child) {
