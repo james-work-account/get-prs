@@ -12,21 +12,25 @@ type RepoPullsType = {
   draft: boolean;
 };
 
+const showAllRepos = false;
+
+const repos = showAllRepos ? [...env.repos, ...env.reposIDoNotCareMuchAbout] : env.repos;
+
 const octokit = new Octokit({
   auth: env.authToken,
 });
 
-const repos = document.querySelector(".repo-list") as Element;
+const repoList = document.querySelector(".repo-list") as Element;
 
 // Populate the page with a list of repositories
-env.repos.map((repo) => {
+repos.map((repo) => {
   const repoEl = document.createElement("li");
   repoEl.classList.add("repo");
   repoEl.innerHTML = `<article id="${repo}">
   <h2 class="repo-name">${repo}</h2>
   <ul></ul>
 </article>`;
-  repos.appendChild(repoEl);
+  repoList.appendChild(repoEl);
 
   // For each repository, fetch pull request data and populate the page with it
   octokit
