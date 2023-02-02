@@ -27,10 +27,8 @@ env.repos.map((repo) => {
   <ul></ul>
 </article>`;
   repos.appendChild(repoEl);
-});
 
-// For each repository, fetch pull request data and populate the page with it
-env.repos.map((repo) =>
+  // For each repository, fetch pull request data and populate the page with it
   octokit
     .request("GET /repos/{owner}/{repo}/pulls{?state,head,base,sort,direction,per_page,page}", {
       owner: env.owner,
@@ -57,8 +55,8 @@ ${pr.draft ? `<p class="draft">Draft</p>` : ""}
     })
     .catch((err) => {
       console.error(err);
-    })
-);
+    });
+});
 
 // Homebrewing a date formatter because I don't want to look up how to do it properly
 function formatDate(d: string): string {
