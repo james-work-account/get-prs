@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/core";
-import env from "./env.json"; // See README.md if you haven't got one of these
+import * as env from "./env.json"; // See README.md if you haven't got one of these
 
 // Only care about these fields so only specifying these types
 type RepoPullsType = {
