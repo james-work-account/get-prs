@@ -1,54 +1,79 @@
-import { Octokit } from "@octokit/core";
+import { graphql } from "@octokit/graphql";
 import * as env from "./env.json"; // See README.md if you haven't got one of these
 
-// Only care about these fields so only specifying these types
-type RepoPullsType = {
-  html_url: string;
-  user: {
-    login: string;
-  };
-  title: string;
-  created_at: string;
-  draft: boolean;
-};
+const repoList = document.querySelector(".repo-list") as Element;
+const loadingEl = document.querySelector(".loading") as Element;
 
-const showAllRepos = false;
-
-const repos = showAllRepos ? [...env.repos, ...env.reposIDoNotCareMuchAbout] : env.repos;
-
-const octokit = new Octokit({
-  auth: env.authToken,
+const graphqlWithAuth = graphql.defaults({
+  headers: {
+    authorization: `bearer ${env.authToken}`,
+  },
 });
 
-const repoList = document.querySelector(".repo-list") as Element;
+graphqlWithAuth(
+  // query generated from https://docs.github.com/en/graphql/overview/explorer
+  `{
+  search(query: "${env.usertype}:${env.owner} ${env.repoSearch} in:name", type: REPOSITORY, first: 30) {
+    edges {
+      node {
+        ... on Repository {
+          name
+          pullRequests(first: 30, states: OPEN) {
+            nodes {
+              url
+              author {
+                login
+              }
+              title
+              isDraft
+              createdAt
+              comments {
+                totalCount
+              }
+              reviewDecision
+            }
+          }
+        }
+      }
+    }
+  }
+}`
+)
+  .then((res: any) => {
+    const repos: RepoType[] = (res as GQLResponse).search.edges.map(({ node }) => {
+      return {
+        name: node.name,
+        pulls: node.pullRequests.nodes.map((pr) => {
+          return {
+            html_url: pr.url,
+            user: pr.author.login,
+            title: pr.title,
+            created_at: formatDate(pr.createdAt),
+            draft: pr.isDraft,
+            reviewDecision: pr.reviewDecision,
+            commentCount: pr.comments.totalCount,
+          };
+        }),
+      };
+    });
 
-// Populate the page with a list of repositories
-repos.map((repo) => {
-  const repoEl = document.createElement("li");
-  repoEl.classList.add("repo");
-  repoEl.innerHTML = `<article id="${repo}">
-  <h2 class="repo-name">${repo}</h2>
-  <ul></ul>
-</article>`;
-  repoList.appendChild(repoEl);
+    repos.map((repo) => {
+      const repoEl = document.createElement("li");
+      repoEl.classList.add("repo");
+      repoEl.innerHTML = `<article id="${repo.name}">
+      <h2 class="repo-name">${repo.name}</h2>
+      <ul></ul>
+    </article>`;
 
-  // For each repository, fetch pull request data and populate the page with it
-  octokit
-    .request("GET /repos/{owner}/{repo}/pulls{?state,head,base,sort,direction,per_page,page}", {
-      owner: env.owner,
-      repo: repo,
-    })
-    .then((result) => {
-      const prs = result.data as RepoPullsType[];
-      const prListEl = document.querySelector(`#${repo} ul`) as Element;
+      const prListEl = repoEl.querySelector(`ul`) as Element;
 
-      if (prs.length > 0) {
-        prs.map((pr) => {
+      if (repo.pulls.length > 0) {
+        repo.pulls.map((pr) => {
           const listEl = document.createElement("li");
           listEl.classList.add("pr");
           listEl.innerHTML = `<h3><a href="${pr.html_url}" target=_blank>${pr.title}</a></h3>
-${pr.draft ? `<p class="draft">Draft</p>` : ""}
-<p>Pull request raised by <strong>${pr.user.login}</strong> at <strong>${formatDate(pr.created_at)}</strong></p>`;
+          ${pr.draft ? `<p class="draft">Draft</p>` : ""}
+          <p>Pull request raised by <strong>${pr.user}</strong> at <strong>${pr.created_at}</strong></p>`;
           prListEl.appendChild(listEl);
         });
       } else {
@@ -56,11 +81,12 @@ ${pr.draft ? `<p class="draft">Draft</p>` : ""}
         listEl.innerHTML = `<p>No pull requests 🥳</p>`;
         prListEl.appendChild(listEl);
       }
-    })
-    .catch((err) => {
-      console.error(err);
+
+      loadingEl.remove();
+      repoList.appendChild(repoEl);
     });
-});
+  })
+  .catch(console.error);
 
 // Homebrewing a date formatter because I don't want to look up how to do it properly
 function formatDate(d: string): string {
