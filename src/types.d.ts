@@ -8,7 +8,6 @@ type RepoType = {
     created_at: string;
     draft: boolean;
     reviewDecision: string;
-    commentCount: number;
   }[];
 };
 
@@ -27,9 +26,6 @@ type GQLResponse = {
             title: string;
             isDraft: boolean;
             createdAt: string;
-            comments: {
-              totalCount: number;
-            };
             reviewDecision: string;
           }[];
         };
