@@ -11,7 +11,6 @@
     "process": "^0.11.10"
   },
   "dependencies": {
-    "@octokit/core": "^4.2.0",
     "@octokit/graphql": "^5.0.5"
   }
 }
