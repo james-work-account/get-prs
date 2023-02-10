@@ -10,8 +10,9 @@ Get a list of open Pull Requests for a list of repositories by a particular user
 ```json
 {
   "authToken": "<YOUR_TOKEN>", // Create a personal access token at https://github.com/settings/tokens/new?scopes=repo
-  "owner": "james-work-account",
-  "repos": ["is-ten-thousand", "tic-tac-toe", "switch-scss", "emailjs-demo"]
+  "usertype": "user", // "user" or "org"
+  "owner": "james-work-account", // User/org the repos belong to
+  "repoSearch": "todo" // Regex to search on. Will match repo names against this search term
 }
 ```
 
