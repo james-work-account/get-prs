@@ -27,9 +27,6 @@ graphqlWithAuth(
               title
               isDraft
               createdAt
-              comments {
-                totalCount
-              }
               reviewDecision
             }
           }
@@ -51,7 +48,6 @@ graphqlWithAuth(
             created_at: formatDate(pr.createdAt),
             draft: pr.isDraft,
             reviewDecision: pr.reviewDecision,
-            commentCount: pr.comments.totalCount,
           };
         }),
       };
@@ -73,7 +69,9 @@ graphqlWithAuth(
           listEl.classList.add("pr");
           listEl.innerHTML = `<h3><a href="${pr.html_url}" target=_blank>${pr.title}</a></h3>
           ${pr.draft ? `<p class="draft">Draft</p>` : ""}
-          <p>Pull request raised by <strong>${pr.user}</strong> at <strong>${pr.created_at}</strong></p>`;
+          <p>Pull request raised by <strong>${pr.user}</strong> at <strong>${pr.created_at}</strong></p>
+          ${pr.reviewDecision === null ? "" : `<p>Review status: <strong>${pr.reviewDecision}</strong></p>`}
+          `;
           prListEl.appendChild(listEl);
         });
       } else {
