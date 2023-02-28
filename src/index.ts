@@ -28,6 +28,7 @@ graphqlWithAuth(
               isDraft
               createdAt
               reviewDecision
+              number
             }
           }
         }
@@ -48,6 +49,7 @@ graphqlWithAuth(
             created_at: formatDate(pr.createdAt),
             draft: pr.isDraft,
             reviewDecision: pr.reviewDecision,
+            number: pr.number,
           };
         }),
       };
@@ -67,7 +69,7 @@ graphqlWithAuth(
         repo.pulls.map((pr) => {
           const listEl = document.createElement("li");
           listEl.classList.add("pr");
-          listEl.innerHTML = `<h3><a href="${pr.html_url}" target=_blank>${pr.title}</a></h3>
+          listEl.innerHTML = `<h3><a href="${pr.html_url}" target=_blank>#${pr.number} - ${pr.title}</a></h3>
           ${pr.draft ? `<p class="draft">Draft</p>` : ""}
           <p>Pull request raised by <strong>${pr.user}</strong> at <strong>${pr.created_at}</strong></p>
           ${pr.reviewDecision === null ? "" : `<p>Review status: <strong>${pr.reviewDecision}</strong></p>`}
