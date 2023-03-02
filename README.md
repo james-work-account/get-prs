@@ -12,7 +12,8 @@ Get a list of open Pull Requests for a list of repositories by a particular user
   "authToken": "<YOUR_TOKEN>", // Create a personal access token at https://github.com/settings/tokens/new?scopes=repo
   "usertype": "user", // "user" or "org"
   "owner": "james-work-account", // User/org the repos belong to
-  "repoSearch": "todo" // Regex to search on. Will match repo names against this search term
+  "repoSearch": "todo", // Regex to search on. Will match repo names against this search term
+  "ignoredRepoPattern": ".*-(prototype|tests)$" // Regex for repos to filter out - OPTIONAL
 }
 ```
 
