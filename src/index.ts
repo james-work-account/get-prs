@@ -1,5 +1,5 @@
 import { graphql } from "@octokit/graphql";
-import * as env from "./env.json"; // See README.md if you haven't got one of these
+import { default as env } from "./env.json"; // See README.md if you haven't got one of these
 
 const repoList = document.querySelector(".repo-list") as Element;
 const loadingEl = document.querySelector(".loading") as Element;
@@ -55,36 +55,40 @@ graphqlWithAuth(
       };
     });
 
-    repos.map((repo) => {
-      const repoEl = document.createElement("li");
-      repoEl.classList.add("repo");
-      repoEl.innerHTML = `<article id="${repo.name}">
+    repos
+      // filter out repos which match a regex if that regex is present in env.json
+      .filter((repo) => (env.ignoredRepoPattern ? !repo.name.match(env.ignoredRepoPattern) : true))
+      // put repos onto the page
+      .map((repo) => {
+        const repoEl = document.createElement("li");
+        repoEl.classList.add("repo");
+        repoEl.innerHTML = `<article id="${repo.name}">
       <h2 class="repo-name">${repo.name}</h2>
       <ul></ul>
     </article>`;
 
-      const prListEl = repoEl.querySelector(`ul`) as Element;
+        const prListEl = repoEl.querySelector(`ul`) as Element;
 
-      if (repo.pulls.length > 0) {
-        repo.pulls.map((pr) => {
-          const listEl = document.createElement("li");
-          listEl.classList.add("pr");
-          listEl.innerHTML = `<h3><a href="${pr.html_url}" target=_blank>#${pr.number} - ${pr.title}</a></h3>
+        if (repo.pulls.length > 0) {
+          repo.pulls.map((pr) => {
+            const listEl = document.createElement("li");
+            listEl.classList.add("pr");
+            listEl.innerHTML = `<h3><a href="${pr.html_url}" target=_blank>#${pr.number} - ${pr.title}</a></h3>
           ${pr.draft ? `<p class="draft">Draft</p>` : ""}
           <p>Pull request raised by <strong>${pr.user}</strong> at <strong>${pr.created_at}</strong></p>
           ${pr.reviewDecision === null ? "" : `<p>Review status: <strong>${pr.reviewDecision}</strong></p>`}
           `;
+            prListEl.appendChild(listEl);
+          });
+        } else {
+          const listEl = document.createElement("li");
+          listEl.innerHTML = `<p>No pull requests 🥳</p>`;
           prListEl.appendChild(listEl);
-        });
-      } else {
-        const listEl = document.createElement("li");
-        listEl.innerHTML = `<p>No pull requests 🥳</p>`;
-        prListEl.appendChild(listEl);
-      }
+        }
 
-      loadingEl.remove();
-      repoList.appendChild(repoEl);
-    });
+        loadingEl.remove();
+        repoList.appendChild(repoEl);
+      });
   })
   .catch(console.error);
 

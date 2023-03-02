@@ -35,3 +35,11 @@ type GQLResponse = {
     }[];
   };
 };
+
+type EnvType = {
+  authToken: string;
+  usertype: string;
+  owner: string;
+  repoSearch: string;
+  ignoredRepoPattern?: string;
+};
