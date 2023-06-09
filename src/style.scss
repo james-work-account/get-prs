@@ -97,6 +97,39 @@ p {
   color: $default-text;
 }
 
+form {
+  max-width: $max-width;
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  input {
+    min-width: 49%;
+    padding: 0.2rem;
+    font-size: 1rem;
+  }
+
+  button {
+    min-width: 49%;
+    padding: 0.2rem;
+    font-size: 1rem;
+  }
+
+  @media (max-width: $max-width) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 100%;
+
+    label {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .repo-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
@@ -136,11 +169,13 @@ p {
   }
 }
 
-.loading {
-  &:after {
-    content: ".";
-    animation: dots 1s steps(5, end) infinite;
-  }
+.hidden {
+  display: none;
+}
+
+.loading::after {
+  content: ".";
+  animation: dots 1s steps(5, end) infinite;
 }
 
 @keyframes dots {
