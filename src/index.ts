@@ -114,7 +114,7 @@ function performSearch() {
 
       repos
         // filter out repos which match a regex if that regex is present in env.json
-        // .filter((repo) => (env.ignoredRepoPattern ? !repo.name.match(env.ignoredRepoPattern) : true))
+        .filter((repo) => (env.ignoredRepoPattern ? !repo.name.match(env.ignoredRepoPattern) : true))
         // put repos onto the page
         .map((repo) => {
           const repoEl = document.createElement("li");
