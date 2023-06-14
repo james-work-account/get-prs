@@ -3,6 +3,7 @@ import { default as env } from "./env.json"; // See README.md if you haven't got
 
 const repoList = document.querySelector(".repo-list") as Element;
 const loadingEl = document.querySelector(".loading") as Element;
+const toggle = document.querySelector("#toggle") as HTMLInputElement;
 
 const graphqlWithAuth = graphql.defaults({
   headers: {
@@ -11,6 +12,9 @@ const graphqlWithAuth = graphql.defaults({
 });
 
 let searchTerm: string;
+
+let repos: RepoType[];
+let filteredRepos: RepoType[];
 
 function performSearch() {
   loadingEl.classList.remove("hidden");
@@ -110,46 +114,63 @@ function performSearch() {
         return repoTypes;
       })();
 
-      let repos: RepoType[] = [...repoSearch, ...issueSearch];
+      repos = [...repoSearch, ...issueSearch];
 
-      repos
-        // filter out repos which match a regex if that regex is present in env.json
-        .filter((repo) => (env.ignoredRepoPattern ? !repo.name.match(env.ignoredRepoPattern) : true))
-        // put repos onto the page
-        .map((repo) => {
-          const repoEl = document.createElement("li");
-          repoEl.classList.add("repo");
-          repoEl.innerHTML = `<article id="${repo.name}">
-        <h2 class="repo-name">${repo.name}</h2>
-        <ul></ul>
-        </article>`;
-
-          const prListEl = repoEl.querySelector(`ul`) as Element;
-
-          if (repo.pullRequests.nodes.length > 0) {
-            repo.pullRequests.nodes.map((pr) => {
-              const listEl = document.createElement("li");
-              listEl.classList.add("pr");
-              listEl.innerHTML = `<h3><a href="${pr.url}" target=_blank>#${pr.number} - ${pr.title}</a></h3>
-          ${pr.isDraft ? `<p class="draft">Draft</p>` : ""}
-          <p>Pull request raised by <strong>${pr.author.login}</strong> at <strong>${formatDate(
-                pr.createdAt
-              )}</strong></p>
-          ${pr.reviewDecision === null ? "" : `<p>Review status: <strong>${pr.reviewDecision}</strong></p>`}
-          `;
-              prListEl.appendChild(listEl);
-            });
-          } else {
-            const listEl = document.createElement("li");
-            listEl.innerHTML = `<p>No pull requests 🥳</p>`;
-            prListEl.appendChild(listEl);
-          }
-
-          loadingEl.classList.add("hidden");
-          repoList.appendChild(repoEl);
-        });
+      updateFilteredRepos();
+      displayRepos();
     })
     .catch(console.error);
+}
+
+function updateFilteredRepos() {
+  if (toggle.checked) {
+    filteredRepos = repos.filter((repo) => repo.pullRequests.nodes.length > 0);
+  } else {
+    filteredRepos = repos;
+  }
+
+  displayRepos();
+}
+
+toggle.addEventListener("change", updateFilteredRepos);
+
+function displayRepos() {
+  repoList.innerHTML = "";
+
+  filteredRepos
+    // filter out repos which match a regex if that regex is present in env.json
+    .filter((repo) => (env.ignoredRepoPattern ? !repo.name.match(env.ignoredRepoPattern) : true))
+    // put repos onto the page
+    .map((repo) => {
+      const repoEl = document.createElement("li");
+      repoEl.classList.add("repo");
+      repoEl.innerHTML = `<article id="${repo.name}">
+  <h2 class="repo-name">${repo.name}</h2>
+  <ul></ul>
+  </article>`;
+
+      const prListEl = repoEl.querySelector(`ul`) as Element;
+
+      if (repo.pullRequests.nodes.length > 0) {
+        repo.pullRequests.nodes.map((pr) => {
+          const listEl = document.createElement("li");
+          listEl.classList.add("pr");
+          listEl.innerHTML = `<h3><a href="${pr.url}" target=_blank>#${pr.number} - ${pr.title}</a></h3>
+    ${pr.isDraft ? `<p class="draft">Draft</p>` : ""}
+    <p>Pull request raised by <strong>${pr.author.login}</strong> at <strong>${formatDate(pr.createdAt)}</strong></p>
+    ${pr.reviewDecision === null ? "" : `<p>Review status: <strong>${pr.reviewDecision}</strong></p>`}
+    `;
+          prListEl.appendChild(listEl);
+        });
+      } else {
+        const listEl = document.createElement("li");
+        listEl.innerHTML = `<p>No pull requests 🥳</p>`;
+        prListEl.appendChild(listEl);
+      }
+
+      loadingEl.classList.add("hidden");
+      repoList.appendChild(repoEl);
+    });
 }
 
 // Homebrewing a date formatter because I don't want to look up how to do it properly

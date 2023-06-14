@@ -196,3 +196,76 @@ form {
     text-shadow: 0.25em 0 0 black, 0.5em 0 0 black;
   }
 }
+
+// https://kittygiraudel.com/2021/04/05/an-accessible-toggle/
+.Toggle {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  gap: 1ch;
+  margin-bottom: 1rem;
+}
+.Toggle__display {
+  --offset: 0.25em;
+  --diameter: 1.8em;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-around;
+
+  width: calc(var(--diameter) * 2 + var(--offset) * 2);
+  height: calc(var(--diameter) + var(--offset) * 2);
+  box-sizing: content-box;
+
+  border: 0.1em solid rgb(0 0 0 / 0.2);
+
+  position: relative;
+  border-radius: 100vw;
+  background-color: #fbe4e2;
+
+  transition: 250ms;
+  cursor: pointer;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0ms;
+  }
+}
+.Toggle__display::before {
+  content: "";
+
+  width: var(--diameter);
+  height: var(--diameter);
+  border-radius: 50%;
+
+  box-sizing: border-box;
+  border: 0.1 solid rgb(0 0 0 / 0.2);
+
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: var(--offset);
+  transform: translate(0, -50%);
+
+  background-color: #fff;
+  transition: inherit;
+}
+.Toggle__input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+.Toggle__input:focus + .Toggle__display {
+  outline: 1px dotted #212121;
+  outline: 1px auto -webkit-focus-ring-color;
+}
+.Toggle__input:focus:not(:focus-visible) + .Toggle__display {
+  outline: 0;
+}
+.Toggle__input:checked + .Toggle__display {
+  background-color: #e3f5eb;
+}
+.Toggle__input:checked + .Toggle__display::before {
+  transform: translate(100%, -50%);
+}
