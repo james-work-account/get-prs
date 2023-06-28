@@ -31,6 +31,13 @@ function performSearch() {
   createdAt
   reviewDecision
   number
+  assignees(first: 10) {
+    edges {
+      node {
+        login
+      }
+    }
+  }
   repository {
     name
   }
@@ -157,8 +164,22 @@ function displayRepos() {
           listEl.classList.add("pr");
           listEl.innerHTML = `<h3><a href="${pr.url}" target=_blank>#${pr.number} - ${pr.title}</a></h3>
     ${pr.isDraft ? `<p class="draft">Draft</p>` : ""}
-    <p>Pull request raised by <strong>${pr.author.login}</strong> at <strong>${formatDate(pr.createdAt)}</strong></p>
-    ${pr.reviewDecision === null ? "" : `<p>Review status: <strong>${pr.reviewDecision}</strong></p>`}
+    <ul>
+          <li><strong>Author</strong>: ${pr.author.login}</li>
+          <li><strong>Date/time raised</strong>: ${formatDate(pr.createdAt)}</li>
+          ${
+            pr.reviewDecision === null
+              ? ""
+              : `<li><strong>Review status</strong>: <strong><span class="${pr.reviewDecision.toLowerCase()}">${
+                  pr.reviewDecision
+                }</span></strong></li>`
+          }
+          ${
+            pr.assignees.edges.length > 0
+              ? `<li><strong>Assigned to</strong>: ${pr.assignees.edges.map((edge) => edge.node.login).join(", ")}</li>`
+              : ""
+          }
+    </ul>
     `;
           prListEl.appendChild(listEl);
         });

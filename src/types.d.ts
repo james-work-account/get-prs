@@ -17,6 +17,13 @@ type PullType = {
   createdAt: string;
   reviewDecision: string;
   number: number;
+  assignees: {
+    edges: {
+      node: {
+        login: string;
+      };
+    }[];
+  };
   repository: {
     name: string;
   };
