@@ -6,6 +6,9 @@ $link-text-hover: #22223b;
 $default-text: #4a4e69;
 $bold-text: #22223b;
 $shadow: #22223b;
+$green: #00b753;
+$yellow: #e8b724;
+$red: #e20404;
 
 //<resets>
 *,
@@ -195,6 +198,17 @@ form {
   100% {
     text-shadow: 0.25em 0 0 black, 0.5em 0 0 black;
   }
+}
+
+// Review statuses
+.approved {
+  color: $green;
+}
+.changes_requested {
+  color: $yellow;
+}
+.review_required {
+  color: $red;
 }
 
 // https://kittygiraudel.com/2021/04/05/an-accessible-toggle/
