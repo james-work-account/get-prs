@@ -4,7 +4,6 @@
     "moduleResolution": "node",
     "newLine": "LF",
     "outDir": "./lib/",
-    "target": "es5",
     "sourceMap": true,
     "declaration": true,
     "jsx": "preserve",
@@ -17,7 +16,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": false
+    "resolveJsonModule": false,
+    "target": "ESNext"
   },
   "include": [
     "src/**/*"
