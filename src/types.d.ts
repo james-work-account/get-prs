@@ -27,6 +27,20 @@ type PullType = {
   repository: {
     name: string;
   };
+  reviewRequests: {
+    nodes: {
+      requestedReviewer: {
+        login: string;
+      };
+    }[];
+  };
+  reviews: {
+    nodes: {
+      author: {
+        login: string;
+      };
+    }[];
+  };
 };
 
 // Really lazily copied from https://docs.github.com/en/graphql/overview/explorer - there's probably a better way to type this

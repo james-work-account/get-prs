@@ -41,6 +41,22 @@ function performSearch() {
   repository {
     name
   }
+  reviewRequests(first: 10) {
+    nodes {
+      requestedReviewer {
+        ... on User {
+          login
+        }
+      }
+    }
+  }
+  reviews(first: 10) {
+    nodes {
+      author {
+        login
+      }
+    }
+  }
 }
 
 {
@@ -177,6 +193,20 @@ function displayRepos() {
           ${
             pr.assignees.edges.length > 0
               ? `<li><strong>Assigned to</strong>: ${pr.assignees.edges.map((edge) => edge.node.login).join(", ")}</li>`
+              : ""
+          }
+          ${
+            pr.reviewRequests.nodes.length > 0
+              ? `<li><strong>Review requested from</strong>: ${pr.reviewRequests.nodes
+                  .map((node) => node.requestedReviewer.login)
+                  .join(", ")}</li>`
+              : ""
+          }
+          ${
+            pr.reviews.nodes.length > 0
+              ? `<li><strong>Reviewed by</strong>: ${[
+                  ...new Set(pr.reviews.nodes.map((node) => node.author.login)),
+                ].join(", ")}</li>`
               : ""
           }
     </ul>
