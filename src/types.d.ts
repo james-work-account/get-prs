@@ -30,7 +30,8 @@ type PullType = {
   reviewRequests: {
     nodes: {
       requestedReviewer: {
-        login: string;
+        login?: string;
+        name?: string;
       };
     }[];
   };

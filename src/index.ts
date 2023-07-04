@@ -47,6 +47,9 @@ function performSearch() {
         ... on User {
           login
         }
+        ... on Team {
+          name
+        }
       }
     }
   }
@@ -198,7 +201,7 @@ function displayRepos() {
           ${
             pr.reviewRequests.nodes.length > 0
               ? `<li><strong>Review requested from</strong>: ${pr.reviewRequests.nodes
-                  .map((node) => node.requestedReviewer.login)
+                  .map((node) => node.requestedReviewer.login || node.requestedReviewer.name)
                   .join(", ")}</li>`
               : ""
           }
