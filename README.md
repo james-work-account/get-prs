@@ -2,6 +2,8 @@
 
 Get a list of open Pull Requests for a list of repositories by a particular user/org.
 
+Currently looks best in Firefox, as it takes advantage of [CSS Masonry layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Masonry_layout) (I wanted an excuse to experiment with Masonry).
+
 ## Requirements
 
 1. NPM
@@ -23,3 +25,7 @@ Get a list of open Pull Requests for a list of repositories by a particular user
 1. `npm install`
 2. `npm run start`
 3. Open http://localhost:1234
+
+OR
+
+1. `./run.sh`
