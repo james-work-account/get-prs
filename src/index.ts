@@ -171,9 +171,9 @@ function displayRepos() {
       const repoEl = document.createElement("li");
       repoEl.classList.add("repo");
       repoEl.innerHTML = `<article id="${repo.name}">
-  <h2 class="repo-name">${repo.name}</h2>
-  <ul></ul>
-  </article>`;
+      <h2 class="repo-name">${repo.name}</h2>
+      <ul></ul>
+      </article>`;
 
       const prListEl = repoEl.querySelector(`ul`) as Element;
 
